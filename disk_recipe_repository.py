@@ -1,4 +1,5 @@
-from domain import Recipe_repository, Recipe
+from domain import Recipe_repository
+from recipe import Recipe
 import os
 import json
 from encoders import RecipeEncoder
