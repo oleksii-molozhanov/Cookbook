@@ -1,4 +1,4 @@
-#!/usr/bin/env pythonprint(f"Recipe found: {path}")
+#!/usr/bin/env python
 # pylint: disable=unused-argument, wrong-import-position
 
 """
