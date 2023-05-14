@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env pythonprint(f"Recipe found: {path}")
 # pylint: disable=unused-argument, wrong-import-position
 
 """
@@ -52,6 +52,22 @@ def main() -> None:
     application = Application.builder().token(TOKEN).build()
 
     # on different commands - answer in Telegram
+    application.add_handler(CommandHandler("remove_recipe", command_hendlers.remove_recipe))
+    application.add_handler(CommandHandler("rm", command_hendlers.remove_recipe))
+    application.add_handler(CommandHandler("del", command_hendlers.remove_recipe))
+
+    application.add_handler(CommandHandler("list", command_hendlers.list_recipes))
+    application.add_handler(CommandHandler("ls", command_hendlers.list_recipes))
+
+    application.add_handler(CommandHandler("view_recipe", command_hendlers.display_recipe))
+    application.add_handler(CommandHandler("view", command_hendlers.display_recipe))
+    application.add_handler(CommandHandler("vr", command_hendlers.display_recipe))
+
+    application.add_handler(CommandHandler("new_recipe", command_hendlers.new_recipe))
+    application.add_handler(CommandHandler("new", command_hendlers.new_recipe))
+    application.add_handler(CommandHandler("nr", command_hendlers.new_recipe))
+    application.add_handler(CommandHandler("add", command_hendlers.new_recipe))
+
     application.add_handler(CommandHandler("start", command_hendlers.start))
     application.add_handler(CommandHandler("help", command_hendlers.help_command))
 
