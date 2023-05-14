@@ -1,3 +1,7 @@
+# Application + Domain
+# For complex domains it is beneficial to separate Application services and Domain objects.
+# Currently this code is simple enogh to keep things coupled.
+
 class Recipe:
 
 	_default_ingredients = ["Only love is needed"]
