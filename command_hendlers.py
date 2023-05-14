@@ -12,7 +12,7 @@ recipe_repo = disk_recipe_repository.Repo()
 book = Cookbook(recipe_repo)
 
 async def remove_recipe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if( not command_has_arguments(update) ):
+    if( not _command_has_arguments(update) ):
         await update.message.reply_text(f"Provide the name of a recipe you want to remove")
         return
 
@@ -30,7 +30,7 @@ async def remove_recipe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
 # Display details of a known recipe.
 async def display_recipe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if( not command_has_arguments(update) ):
+    if( not _command_has_arguments(update) ):
         await update.message.reply_text(f"Provide the name of a recipe you want to view")
         return
 
@@ -53,7 +53,7 @@ async def list_recipes(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 # Add new recipe to the cookbook.
 async def new_recipe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if( not command_has_arguments(update) ):
+    if( not _command_has_arguments(update) ):
         await update.message.reply_text(f"""Creating a new recipe requires at least 1 argument - name of the new recipe.
 Format of the command:
 /nr name
@@ -99,7 +99,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(update.message.text)
 
 
-def command_has_arguments(update: Update) -> str:
+def _command_has_arguments(update: Update) -> str:
     text_exists = update != None and update.message != None and isinstance(update.message.text, str)
     if( not text_exists ): return False
 
