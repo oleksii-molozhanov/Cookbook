@@ -45,6 +45,32 @@ Ingredients ({len(self.ingredients)}):
 
 
 
+from abc import ABC, abstractmethod
+
+class Recipe_repository(ABC):
+
+	@abstractmethod
+	def persist(self, recipe: Recipe) -> None:
+		pass
+
+
+	@abstractmethod
+	def retrieve(self, key: str) -> Recipe:
+		pass
+
+
+	@abstractmethod
+	def retrieve_all(self) -> list[Recipe]:
+		pass
+
+
+	@abstractmethod
+	def move_to_removed(self, key: str) -> None:
+		pass
+
+
+
+
 import os
 import json
 from encoders import RecipeEncoder
@@ -56,13 +82,12 @@ class Cookbook:
 	_recipe_persistance_removed_location = os.environ.get("RECIPES_REMOVED_FOLDER_PATH") or "recipes/removed/"	
 
 
-	def __init__(self):
+	def __init__(self, recipe_repository: Recipe_repository):
+		# This is actually a cache. Repo should probably be used directly instead
 		self._recipe_list = {}
+		self._repo = recipe_repository		
 
-		Cookbook._make_dir_if_absent(Cookbook._recipe_persistance_location)
-		Cookbook._make_dir_if_absent(Cookbook._recipe_persistance_removed_location)
-
-		existing = Cookbook._retrieve_all()
+		existing = self._repo.retrieve_all()
 		for r in existing: self._add_recipe(r)
 		
 
@@ -76,7 +101,7 @@ class Cookbook:
 
 		new_r = Recipe(name, description, ingredients)
 		self._add_recipe(new_r)
-		Cookbook._store(new_r)		
+		self._repo.persist(new_r)
 		return new_r
 
 
@@ -92,8 +117,7 @@ class Cookbook:
 	def list_known_recipes(self) -> str:
 		if( len(self.recipe_list) == 0 ): return "No known recipes, only wind blows here"
 
-		return "Known recipes:\n" + "\n".join( Recipe._spacing + r.name for r in self.recipe_list.values())		
-		
+		return "Known recipes:\n" + "\n".join( Recipe._spacing + r.name for r in self.recipe_list.values())			
 
 
 	def get_recipe(self, name: str) -> Recipe:
@@ -102,42 +126,8 @@ class Cookbook:
 
 	def remove_recipe(self, name: str) -> None:
 		self.recipe_list.pop(name)
-		Cookbook._rename_persistant_copy(name)
+		self._repo.move_to_removed(name)
 
-
-	def _store(recipe: Recipe) -> None:
-		file_name = Cookbook._recipe_persistance_location + recipe.name + ".json"
-		content = json.dumps(recipe, cls=RecipeEncoder)		
-		with open(file_name, 'w') as file:
-			file.write(content)
-
-		print(f"Recipe {recipe.name} was written to: {file_name}")
-
-
-	def _rename_persistant_copy(name: str) -> None:
-		full_path = os.path.join(Cookbook._recipe_persistance_location, f"{name}.json")
-		if os.path.isfile(full_path):
-			new_path = os.path.join(Cookbook._recipe_persistance_removed_location, f"removed_{name}_{int(datetime.datetime.now().timestamp())}.json")
-			os.rename(full_path, new_path)
-
-
-	def _retrieve_all():
-		recipes = []
-		for path in os.listdir(Cookbook._recipe_persistance_location):			
-			full_path = os.path.join(Cookbook._recipe_persistance_location, path)
-			if os.path.isfile(full_path):
-				# Ignore system files
-				if path[0] == ".": continue
-
-				with open(full_path) as file:
-					recipe = Recipe(**json.loads(file.read()))
-					recipes.append(recipe)
-
-		return recipes
-
-
-	def _make_dir_if_absent(path: str) -> None:
-		if not os.path.exists(path): os.makedirs(path)
 
 
 class DuplicateKeyError(Exception): pass

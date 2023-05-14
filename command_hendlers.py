@@ -6,8 +6,10 @@
 from telegram import ForceReply, Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 from domain import DuplicateKeyError, Cookbook, Recipe
+import disk_recipe_repository
 
-book = Cookbook()
+recipe_repo = disk_recipe_repository.Repo()
+book = Cookbook(recipe_repo)
 
 async def remove_recipe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if( not command_has_arguments(update) ):
@@ -20,7 +22,7 @@ async def remove_recipe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     try:
         recipe = book.remove_recipe(target_name)
     except KeyError:
-        await update.message.reply_text(f"Could not find a recipe with the name {target_name}.\n{book.list_known_recipes()}")
+        await update.message.reply_text(f"Could not find a recipe with the name {target_name}\n{book.list_known_recipes()}")
         return
 
     await update.message.reply_text(f"Removed recipe: {target_name}")
