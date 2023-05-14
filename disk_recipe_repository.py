@@ -1,4 +1,4 @@
-from domain import Recipe_repository
+from cookbook import Recipe_repository
 from recipe import Recipe
 import os
 import json

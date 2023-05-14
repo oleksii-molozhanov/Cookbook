@@ -5,7 +5,7 @@
 
 from telegram import ForceReply, Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
-from domain import DuplicateKeyError, Cookbook, Recipe
+from cookbook import DuplicateKeyError, Cookbook
 import disk_recipe_repository
 
 recipe_repo = disk_recipe_repository.Repo()
