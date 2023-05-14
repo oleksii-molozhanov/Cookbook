@@ -2,44 +2,14 @@
 # For complex domains it is beneficial to separate Application services and Domain objects.
 # Currently this code is simple enogh to keep things coupled.
 
-
-from abc import ABC, abstractmethod
-from recipe import Recipe
-
-class Recipe_repository(ABC):
-
-	@abstractmethod
-	def persist(self, recipe: Recipe) -> None:
-		pass
-
-
-	@abstractmethod
-	def retrieve(self, key: str) -> Recipe:
-		pass
-
-
-	@abstractmethod
-	def retrieve_all(self) -> list[Recipe]:
-		pass
-
-
-	@abstractmethod
-	def move_to_removed(self, key: str) -> None:
-		pass
-
-
-
-
 import os
 import json
 from encoders import RecipeEncoder
+from recipe_repository_interface import Recipe_repository
+from recipe import Recipe
 import datetime
 
 class Cookbook:
-
-	_recipe_persistance_location = os.environ.get("RECIPES_FOLDER_PATH") or "recipes/"
-	_recipe_persistance_removed_location = os.environ.get("RECIPES_REMOVED_FOLDER_PATH") or "recipes/removed/"	
-
 
 	def __init__(self, recipe_repository: Recipe_repository):
 		# This is actually a cache. Repo should probably be used directly instead
