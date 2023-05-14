@@ -49,7 +49,7 @@ import datetime
 class Cookbook:
 
 	_recipe_persistance_location = os.environ.get("RECIPES_FOLDER_PATH") or "recipes/"
-	_recipe_persistance_removed_location = os.environ.get("RECIPES_REMOVED_FOLDER_PATH") or "recipes/deleted/"	
+	_recipe_persistance_removed_location = os.environ.get("RECIPES_REMOVED_FOLDER_PATH") or "recipes/removed/"	
 
 
 	def __init__(self):
@@ -113,7 +113,7 @@ class Cookbook:
 	def _rename_persistant_copy(name: str) -> None:
 		full_path = os.path.join(Cookbook._recipe_persistance_location, f"{name}.json")
 		if os.path.isfile(full_path):
-			new_path = os.path.join(Cookbook._recipe_persistance_removed_location, f"deleted_{name}_{int(datetime.datetime.now().timestamp())}.json")
+			new_path = os.path.join(Cookbook._recipe_persistance_removed_location, f"removed_{name}_{int(datetime.datetime.now().timestamp())}.json")
 			os.rename(full_path, new_path)
 
 
